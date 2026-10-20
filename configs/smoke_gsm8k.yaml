@@ -1,0 +1,36 @@
+# Live smoke test: 100 GSM8K queries end-to-end.
+# Strong model is gpt-4o-mini (the paper's gemini-2.0-flash credentials are
+# currently unavailable); both roles run on OPENAI_API_KEY.
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: openai
+  model: gpt-4o-mini
+  api_key_env: OPENAI_API_KEY
+
+weak_deferral:
+  alpha: 0.4
+  delta: 0.6
+
+strong_deferral:
+  alpha: 0.2
+  delta: 0.7
+
+repository:
+  dir: strategy_repo/gsm8k_smoke
+  top_k: 2
+  retrieval: similarity
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/gsm8k/calibration_gsm8k.json
+artifacts_dir: artifacts/gsm8k_smoke

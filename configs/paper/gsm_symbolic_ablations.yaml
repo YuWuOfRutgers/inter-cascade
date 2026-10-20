@@ -1,0 +1,41 @@
+# Ablations for GSM-Symbolic (run each by editing `repository:` as noted, or
+# copy this file once per variant). Everything else matches gsm_symbolic.yaml.
+#
+# Random strategies   -> retrieval: random        (pass --seed to `run`)
+# No-strategy         -> include_strategy: false  (retrieved Q/A only)
+# Cold start          -> seed_from_calibration: false
+#
+# Use a separate repository dir per variant so their stores don't mix.
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+
+weak_deferral:
+  alpha: 0.6
+  delta: 0.6
+
+strong_deferral:
+  alpha: 0.2
+  delta: 0.8
+
+repository:
+  dir: strategy_repo/gsm_symbolic_random
+  top_k: 2
+  retrieval: random          # <- ablation switch
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/gsm_symbolic/calibration_gsm_symbolic.json
+artifacts_dir: artifacts/gsm_symbolic

@@ -1,0 +1,43 @@
+# Inter-Cascade configuration. API keys come from environment variables only.
+# `inter-cascade init` writes this same template to your working directory.
+
+weak:
+  provider: openai            # openai | gemini; openai also covers vLLM/Ollama etc.
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+  # base_url: http://localhost:8000/v1   # uncomment for a local open-source model
+  temperature: 0.0
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+  # project_id: your-gcp-project        # use Vertex AI instead of an API key
+
+# Deferral rules: give alpha/delta and `calibrate` derives the threshold with
+# a provable risk bound; or pin `threshold` directly; or leave all null to
+# always accept (common for the strong model).
+weak_deferral:
+  alpha: 0.6
+  delta: 0.6
+
+strong_deferral:
+  alpha: null
+  delta: null
+
+repository:
+  dir: strategy_repo
+  embedding_model: all-MiniLM-L6-v2
+  top_k: 2
+  similarity_threshold: null   # keep retrieved docs with cosine score > this
+  retrieval: similarity        # similarity | random (ablation) | none (baseline cascade)
+  include_strategy: true       # false = no-strategy ablation
+  write: true                  # false = frozen repository
+  seed_from_calibration: true  # false = cold start
+
+task:
+  answer_type: numeric         # numeric | multiple_choice | freeform
+  judge: strong                # grade answers with the strong model when needed
+
+calibration_file: data/calibration_gsm8k.json
+artifacts_dir: artifacts

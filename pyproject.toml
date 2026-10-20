@@ -1,0 +1,42 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "inter-cascade"
+version = "0.1.0"
+description = "Inter-Cascade: an online, interactive LLM cascade where the strong model teaches the weak model via a self-evolving strategy repository."
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+keywords = ["llm", "cascade", "routing", "deferral", "in-context-learning", "rag"]
+
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+
+dependencies = [
+  "numpy>=1.21",
+  "scipy>=1.10",
+  "pyyaml>=6.0",
+  "openai>=1.0",
+  "sentence-transformers>=2.2",
+  "faiss-cpu>=1.7",
+]
+
+[project.optional-dependencies]
+# Strong/weak models served through Google Gemini (API key or Vertex AI)
+gemini = ["google-genai>=1.0"]
+# Downloading benchmark datasets used in the paper
+data = ["datasets>=2.14"]
+all = ["google-genai>=1.0", "datasets>=2.14"]
+
+[project.scripts]
+inter-cascade = "inter_cascade.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["inter_cascade*"]

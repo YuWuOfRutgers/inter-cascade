@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Secrets
+.env
+
+# Experiment artifacts
+artifacts/
+results/
+strategy_repo*/
+data/
+!configs/data/
+
+# OS / editors
+.DS_Store
+.idea/
+.vscode/

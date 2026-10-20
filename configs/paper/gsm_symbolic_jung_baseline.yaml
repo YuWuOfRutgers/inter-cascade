@@ -1,0 +1,33 @@
+# Baseline for GSM-Symbolic: the standard confidence-thresholded cascade of
+# Jung et al. (2024) - identical models and thresholds, but no strategy
+# retrieval and no repository writes.
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+
+weak_deferral:
+  alpha: 0.6
+  delta: 0.6
+
+strong_deferral:
+  alpha: 0.2
+  delta: 0.8
+
+repository:
+  retrieval: none
+  write: false
+  seed_from_calibration: false
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/gsm_symbolic/calibration_gsm_symbolic.json
+artifacts_dir: artifacts/gsm_symbolic
