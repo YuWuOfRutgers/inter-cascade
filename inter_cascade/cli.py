@@ -174,7 +174,12 @@ def main(argv=None) -> int:
     p.set_defaults(func=cmd_init)
 
     p = sub.add_parser("prepare", help="download a benchmark into calibration/test JSON")
-    p.add_argument("--dataset", required=True, help="gsm_symbolic | gsm8k | nasa_history")
+    p.add_argument(
+        "--dataset",
+        required=True,
+        help="gsm_symbolic | gsm_plus | metamath | nasa_history | "
+        "gsm8k | bigbench | barexam | medmcqa",
+    )
     p.add_argument("--output-dir", default="data")
     p.add_argument("--calib-ratio", type=float, default=None)
     p.add_argument("--seed", type=int, default=None)

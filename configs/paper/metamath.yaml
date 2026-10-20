@@ -1,0 +1,46 @@
+# Paper setting for MetaMath (20K) (main results table (c)):
+#   weak  = gpt-3.5-turbo,     alpha=0.4, delta=0.6  (calibrated lambda ~ 0.61)
+#   strong = gemini-2.0-flash, no threshold (always accept)
+#   k = 2 retrieved strategies, no similarity cutoff
+# The test stream interleaves rephrased MetaMath queries with their
+# original GSM8K questions (built by `prepare`), as in the paper.
+#
+#   inter-cascade prepare --dataset metamath --output-dir data/metamath
+#   inter-cascade calibrate --config configs/paper/metamath.yaml
+#   inter-cascade run --config configs/paper/metamath.yaml \
+#       --input data/metamath/test_metamath.json \
+#       --output results/metamath_inter_cascade.json
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+  # project_id: your-gcp-project   # the paper used Vertex AI
+
+weak_deferral:
+  alpha: 0.4
+  delta: 0.6
+
+strong_deferral:
+  alpha: null
+  delta: null
+
+repository:
+  dir: strategy_repo/metamath
+  top_k: 2
+  retrieval: similarity
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/metamath/calibration_metamath.json
+artifacts_dir: artifacts/metamath

@@ -1,0 +1,46 @@
+# Paper setting for BigBench-Hard (appendix table (b)):
+#   weak  = gpt-3.5-turbo,     alpha=0.4, delta=0.6  (calibrated lambda ~ 0.61)
+#   strong = gemini-2.0-flash, no threshold (always accept)
+#   k = 2 retrieved strategies, no similarity cutoff
+# BIG-Bench Hard mixes option-letter and short free-form targets, so the
+# task uses the freeform answer format with the strong model as judge.
+#
+#   inter-cascade prepare --dataset bigbench --output-dir data/bigbench
+#   inter-cascade calibrate --config configs/paper/bigbench.yaml
+#   inter-cascade run --config configs/paper/bigbench.yaml \
+#       --input data/bigbench/test_bigbench.json \
+#       --output results/bigbench_inter_cascade.json
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+  # project_id: your-gcp-project   # the paper used Vertex AI
+
+weak_deferral:
+  alpha: 0.4
+  delta: 0.6
+
+strong_deferral:
+  alpha: null
+  delta: null
+
+repository:
+  dir: strategy_repo/bigbench
+  top_k: 2
+  retrieval: similarity
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: freeform
+  judge: strong
+
+calibration_file: data/bigbench/calibration_bigbench.json
+artifacts_dir: artifacts/bigbench

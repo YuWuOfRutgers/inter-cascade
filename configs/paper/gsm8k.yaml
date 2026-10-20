@@ -1,0 +1,44 @@
+# Paper setting for GSM8K (appendix table (a)):
+#   weak  = gpt-3.5-turbo,     alpha=0.5, delta=0.5  (calibrated lambda ~ 0.49)
+#   strong = gemini-2.0-flash, alpha=0.2, delta=0.8  (calibrated lambda ~ 0.44)
+#   k = 2 retrieved strategies, no similarity cutoff
+#
+#   inter-cascade prepare --dataset gsm8k --output-dir data/gsm8k
+#   inter-cascade calibrate --config configs/paper/gsm8k.yaml
+#   inter-cascade run --config configs/paper/gsm8k.yaml \
+#       --input data/gsm8k/test_gsm8k.json \
+#       --output results/gsm8k_inter_cascade.json
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+  # project_id: your-gcp-project   # the paper used Vertex AI
+
+weak_deferral:
+  alpha: 0.5
+  delta: 0.5
+
+strong_deferral:
+  alpha: 0.2
+  delta: 0.8
+
+repository:
+  dir: strategy_repo/gsm8k
+  top_k: 2
+  retrieval: similarity
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/gsm8k/calibration_gsm8k.json
+artifacts_dir: artifacts/gsm8k

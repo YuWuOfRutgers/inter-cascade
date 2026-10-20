@@ -31,7 +31,7 @@ strong LLM ──(answer + strategy)──▶ <b>strategy repository</b></em></p
 ## Installation
 
 ```bash
-git clone <this-repo>
+git clone https://github.com/YuWuOfRutgers/inter-cascade.git
 cd inter-cascade
 pip install -e .            # core (OpenAI-compatible endpoints)
 pip install -e ".[gemini]"  # + Google Gemini support
@@ -108,8 +108,31 @@ print(result.answer, result.source)   # e.g. "6 weak" — no strong-model fee
 
 ## Reproducing the paper
 
-`configs/paper/` pins the paper's hyperparameters per benchmark; the paper's
-baseline and every ablation are config switches on the same pipeline:
+All eight benchmarks ship with a built-in downloader and a config pinning the
+paper's hyperparameters. The recipe is the same three commands for each —
+substitute any benchmark name from the table:
+
+```bash
+inter-cascade prepare   --dataset gsm_plus --output-dir data/gsm_plus
+inter-cascade calibrate --config configs/paper/gsm_plus.yaml
+inter-cascade run       --config configs/paper/gsm_plus.yaml \
+    --input data/gsm_plus/test_gsm_plus.json --output results/gsm_plus.json
+```
+
+| Benchmark | `--dataset` / config | Weak α/δ | Strong α/δ | Answer type |
+|---|---|---|---|---|
+| GSM-Symbolic (main) | `gsm_symbolic` | 0.6 / 0.6 | 0.2 / 0.8 | numeric |
+| GSM-Plus (main) | `gsm_plus` | 0.6 / 0.6 | 0.2 / 0.8 | numeric |
+| MetaMath 20K (main) | `metamath` | 0.4 / 0.6 | — (always accept) | numeric |
+| NASA-History (main) | `nasa_history` | 0.2 / 0.7 | — | multiple choice |
+| GSM8K (appendix) | `gsm8k` | 0.5 / 0.5 | 0.2 / 0.8 | numeric |
+| BigBench-Hard (appendix) | `bigbench` | 0.4 / 0.6 | — | freeform |
+| BarExamQA (appendix) | `barexam` | 0.5 / 0.5 | — | multiple choice |
+| MedMCQA (appendix) | `medmcqa` | 0.3 / 0.8 | — | multiple choice |
+
+The paper's baseline and every ablation are config switches on the same
+pipeline (see `configs/paper/gsm_symbolic_jung_baseline.yaml` and
+`configs/paper/gsm_symbolic_ablations.yaml` for ready-made examples):
 
 | Paper variant | `repository:` settings |
 |---|---|
@@ -123,9 +146,9 @@ baseline and every ablation are config switches on the same pipeline:
 bash scripts/reproduce_gsm_symbolic.sh   # prepare → calibrate → ours + baseline → stats
 ```
 
-Full experiment grids (8 benchmarks, LLM-pair and top-k ablations) are in the
-paper; the GSM-Symbolic headline numbers are Pipeline Acc. **70.37%** vs 66.04%
-(baseline) with Strong-model calls **30.84%** vs 59.37%.
+The LLM-pair and top-k ablation grids are in the paper; the GSM-Symbolic
+headline numbers are Pipeline Acc. **70.37%** vs 66.04% (baseline) with
+Strong-model calls **30.84%** vs 59.37%.
 
 ## How it works
 

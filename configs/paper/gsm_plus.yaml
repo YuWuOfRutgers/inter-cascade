@@ -1,0 +1,44 @@
+# Paper setting for GSM-Plus (main results table (b)):
+#   weak  = gpt-3.5-turbo,     alpha=0.6, delta=0.6  (calibrated lambda ~ 0.48)
+#   strong = gemini-2.0-flash, alpha=0.2, delta=0.8  (calibrated lambda ~ 0.51)
+#   k = 2 retrieved strategies, no similarity cutoff
+#
+#   inter-cascade prepare --dataset gsm_plus --output-dir data/gsm_plus
+#   inter-cascade calibrate --config configs/paper/gsm_plus.yaml
+#   inter-cascade run --config configs/paper/gsm_plus.yaml \
+#       --input data/gsm_plus/test_gsm_plus.json \
+#       --output results/gsm_plus_inter_cascade.json
+
+weak:
+  provider: openai
+  model: gpt-3.5-turbo
+  api_key_env: OPENAI_API_KEY
+
+strong:
+  provider: gemini
+  model: gemini-2.0-flash
+  api_key_env: GEMINI_API_KEY
+  # project_id: your-gcp-project   # the paper used Vertex AI
+
+weak_deferral:
+  alpha: 0.6
+  delta: 0.6
+
+strong_deferral:
+  alpha: 0.2
+  delta: 0.8
+
+repository:
+  dir: strategy_repo/gsm_plus
+  top_k: 2
+  retrieval: similarity
+  include_strategy: true
+  write: true
+  seed_from_calibration: true
+
+task:
+  answer_type: numeric
+  judge: strong
+
+calibration_file: data/gsm_plus/calibration_gsm_plus.json
+artifacts_dir: artifacts/gsm_plus
