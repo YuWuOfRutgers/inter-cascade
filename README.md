@@ -196,7 +196,7 @@ If you use this code, please cite the Inter-Cascade paper:
 @article{intercascade2026,
   title   = {From Deferral to Learning: Online In-Context Knowledge
              Distillation for LLM Cascades},
-  author  = {...},
+  author  = {Yu Wu, Shuo Wu, Ye Tao, Yansong Li, Anand D. Sarwate},
   journal = {Transactions on Machine Learning Research},
   year    = {2026}
 }
